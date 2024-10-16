@@ -5,48 +5,65 @@
 
 ## Project Description
 
-This project implements a cryptographic decryption algorithm based on a Markov Chain model of letter transitions. The program processes text data to determine the likelihood of letter sequences in English and uses simulated annealing to optimize a key for decrypting encoded text. The key approach centers on finding an optimal solution to maximize the total probability of the decrypted text matching English language structures.
+This project focuses on decrypting encoded text using a statistical approach, specifically a Markov Chain model to simulate letter transitions in English. The goal is to optimize a decryption key through simulated annealing to maximize the likelihood that the decrypted text matches common English letter sequences.
 
 ## Code Architecture
 
-### 1. Input Data Management
+### 1. **Rank Function (`rank`)**
 
-The text for *War and Peace* is loaded and analyzed to determine the frequency of letter transitions in the English language. A Markov Chain transition matrix (M) is built to represent the likelihood that one letter follows another. The text data undergoes preprocessing, including conversion to lowercase and filtering out non-alphabet characters.
+The `rank` function calculates the Unicode value of characters relative to the Unicode value of lowercase 'a'. This is used to map letters of the alphabet to numeric indices for building the transition matrix.
 
-### 2. Generating a Key
+### 2. **Generating a Key (`generate_key`)**
 
-The function `generate_key` creates a random mapping of the alphabet, which serves as the initial decryption key. This key is refined through optimization to maximize the decryption accuracy.
+The `generate_key` function maps the alphabet to another randomly shuffled sequence of letters. This randomized key serves as the initial guess for decrypting the encoded text. The function returns a dictionary containing this mapping.
 
-### 3. Calculating Probabilities (`P_calculation`)
+### 3. **Calculating Probabilities (`P_calculation`)**
 
-The function `P_calculation` computes the total probability, P, of the decrypted phrase matching English letter transition probabilities from the Markov matrix. This serves as the optimization target during simulated annealing.
+The `P_calculation` function evaluates how well a given decrypted phrase matches the English language structure by calculating the total probability based on the Markov transition matrix. It sums the transition probabilities for each pair of consecutive letters in the decrypted phrase.
 
-### 4. Simulated Annealing and Key Optimization (`optimal_swap`)
+### 4. **Simulated Annealing and Key Optimization (`optimal_swap`)**
 
-The `optimal_swap` function uses simulated annealing to iteratively improve the decryption key by randomly swapping two letters in the key and accepting or rejecting swaps based on the Metropolis probability.
+The `optimal_swap` function implements a simulated annealing algorithm to optimize the decryption key. Two random letters in the key are swapped, and the new key is accepted or rejected based on the calculated probability of improvement. The function uses a temperature variable to control the acceptance of less optimal swaps (Metropolis criterion).
 
-### 5. Accuracy Check (`accuracy_check`)
+### 5. **Accuracy Check (`accuracy_check`)**
 
-This function compares the decrypted phrase with the correct answer and calculates the accuracy of the decryption based on the percentage of correctly placed letters.
+The `accuracy_check` function compares the decrypted phrase to the original encoded phrase and calculates the fraction of letters that have been correctly mapped. This is used to evaluate the performance of the decryption algorithm.
 
-## Parameter Testing and Results
+### 6. **Analysis Functions**
 
-### 1. Simulated Annealing with Varying Time Constants (𝝉)
+Several functions such as `optimal_swap_analysis`, `accuracy_check_analysis`, and `test_tau` are used to test the effect of different parameters on the accuracy of the decryption:
+- **`test_tau`**: Tests the effect of varying the time constant (𝝉) on the cooling schedule in the simulated annealing process.
+- **`test_positive_proposal`**: Analyzes the effect of only accepting positive swaps during optimization.
+- **`test_negative_proposal`**: Examines the probability of accepting negative proposals and its effect on optimization.
 
-The performance of the algorithm was evaluated by varying the annealing time constant, 𝝉, which controls the rate of cooling. It was found that slower cooling rates (higher 𝝉 values) resulted in better accuracy, with a maximum accuracy of 25.58%.
+## Dependencies
 
-### 2. Accepting Only Positive Proposals
+- Python 3.x
+- NumPy
+- Pandas
+- Matplotlib
+- SciPy
 
-When only positive swaps were accepted, the algorithm consistently got stuck in local maxima, yielding an accuracy rate of 9.3%. This result highlights the importance of accepting negative swaps to escape local optima.
+These libraries are essential for matrix operations, statistical analysis, and visualization.
 
-### 3. Varying the Probability of Accepting Negative Proposals
+## How to Run the Project
 
-By adjusting the probability of accepting negative swaps, it was determined that a balance between rejecting and accepting negative swaps is crucial. Extreme probabilities (either too high or too low) reduced the decryption accuracy.
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yourusername/cryptography.git
+   ```
 
-### 4. Varying Probability Calculation Methods
+2. **Navigate to the project folder:**
+    ```bash
+    cd cryptography
+   ```
 
-Different methods of calculating the total probability (addition, multiplication, and logarithmic addition) were tested. The addition method provided the highest accuracy (25.58%), while the multiplication method resulted in 0% accuracy due to the small magnitude of individual probabilities.
+3. **Install required dependencies:**
+    ```bash
+   pip install -r requirements.txt
+   ```
 
-## Conclusion
-
-This project demonstrates the use of simulated annealing in cryptography to optimize a decryption key. Through testing various parameters, an optimal solution was found that maximizes the decryption accuracy based on a transition matrix derived from the English language.
+4. **Run the cryptography code:**
+    ```bash
+   python cryptography.py
+   ```
