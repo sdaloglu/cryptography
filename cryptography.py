@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 
 
-data = np.load("wp.npz")    #Loading "War and Peace" data
+data = np.load("war_peace.npz")    #Loading "War and Peace" data
 text = data['text']    #Choosing the value of key 'text' key
 text = str(text.item())    #Selecting the scalar element of the text array and converting to string
 text = text.lower()    #Convert all letters to lower case
